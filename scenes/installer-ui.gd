@@ -52,7 +52,7 @@ func show_install_view() -> void:
 	_cancel_button.visible = false
 	_progress_bar.visible = false
 	_status_label.text = "Choose install location:"
-	_detail_label.text = ""
+	_set_detail("")
 	_result_icon.visible = false
 	_space_container.visible = _required_bytes > 0
 
@@ -64,7 +64,7 @@ func show_upgrade_view() -> void:
 	_progress_bar.visible = true
 	_progress_bar.value = 0
 	_status_label.text = "Preparing upgrade..."
-	_detail_label.text = ""
+	_set_detail("")
 	_result_icon.visible = false
 	_space_container.visible = false
 
@@ -76,7 +76,7 @@ func show_rollback_view() -> void:
 	_progress_bar.visible = true
 	_progress_bar.value = 0
 	_status_label.text = "Restoring previous version..."
-	_detail_label.text = ""
+	_set_detail("")
 	_result_icon.visible = false
 	_space_container.visible = false
 
@@ -100,7 +100,7 @@ func _on_phase_changed(phase: UpgradeManager.Phase, detail: String) -> void:
 
 func _on_progress_updated(percent: float, status: String) -> void:
 	_progress_bar.value = percent
-	_detail_label.text = status
+	_set_detail(status)
 
 func _on_upgrade_completed(success: bool, message: String) -> void:
 	_progress_bar.visible = false
@@ -110,7 +110,7 @@ func _on_upgrade_completed(success: bool, message: String) -> void:
 		_result_icon.text = "✓"
 		_result_icon.add_theme_color_override("font_color", Color(0.4, 0.9, 0.4))
 		_status_label.text = "Success!"
-		_detail_label.text = message
+		_set_detail(message)
 
 		# Auto-close after 3 seconds on success
 		var timer = get_tree().create_timer(3.0)
@@ -119,7 +119,7 @@ func _on_upgrade_completed(success: bool, message: String) -> void:
 		_result_icon.text = "✕"
 		_result_icon.add_theme_color_override("font_color", Color(0.9, 0.3, 0.3))
 		_status_label.text = "Failed"
-		_detail_label.text = message
+		_set_detail(message)
 		_detail_label.add_theme_color_override("font_color", Color(0.75, 0.6, 0.6))
 
 		# Grow window to fit error detail
@@ -202,7 +202,8 @@ func _build_ui() -> void:
 
 	# Detail label (right after status so it's always visible)
 	_detail_label = Label.new()
-	_detail_label.text = ""
+	_set_detail("")
+	_detail_label.visible = false
 	_detail_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_detail_label.add_theme_font_size_override("font_size", 12)
 	_detail_label.add_theme_color_override("font_color", Color(0.6, 0.62, 0.65))
@@ -386,6 +387,10 @@ func _apply_button_style(button: Button, is_primary: bool = false) -> void:
 		pressed.bg_color = Color(0.15, 0.17, 0.2)
 	button.add_theme_stylebox_override("pressed", pressed)
 
+func _set_detail(text: String) -> void:
+	_detail_label.text = text
+	_detail_label.visible = text != ""
+
 func _on_browse_pressed() -> void:
 	# Use native OS folder picker (opens as a separate system window)
 	var _dialog = DisplayServer.file_dialog_show(
@@ -409,7 +414,7 @@ func _on_action_pressed() -> void:
 	if _action_button.text == "Install":
 		var install_dir = _path_edit.text.strip_edges()
 		if install_dir == "":
-			_detail_label.text = "Please choose an install location."
+			_set_detail("Please choose an install location.")
 			return
 		install_requested.emit(install_dir)
 
