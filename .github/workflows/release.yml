@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write  # Required to create GitHub Releases
+
+env:
+  GODOT_VERSION: "4.5.0"
+  EXPORT_PRESET: "Windows Desktop"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Create license-config.json from secrets
+        if: ${{ vars.SUPABASE_LICENSE_URL != '' }}
+        run: |
+          cat > license-config.json <<EOF
+          {
+            "supabase_license_url": "${{ vars.SUPABASE_LICENSE_URL }}",
+            "supabase_license_key": "${{ secrets.SUPABASE_LICENSE_PUBLISHABLE_KEY }}"
+          }
+          EOF
+
+      - name: Install Godot
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
+
+      - name: Import project (generate .godot cache)
+        run: |
+          godot --headless --import 2>&1 || true
+        timeout-minutes: 3
+
+      - name: Export Windows build
+        run: |
+          mkdir -p exports
+          godot --headless --export-release "${{ env.EXPORT_PRESET }}" \
+            "exports/SuganoteInstaller.exe"
+
+      - name: List export output
+        working-directory: exports
+        run: ls -la
+
+      - name: Extract release notes from tag message
+        id: notes
+        run: |
+          NOTES=$(git tag -l --format='%(contents)' "${{ steps.version.outputs.tag }}" 2>/dev/null || echo "")
+          if [ -z "$NOTES" ]; then
+            NOTES=$(git log -1 --pretty=%B)
+          fi
+          echo "notes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$NOTES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Suganote Installer ${{ steps.version.outputs.tag }}
+          body: ${{ steps.notes.outputs.notes }}
+          files: |
+            exports/SuganoteInstaller.exe
+            exports/SuganoteInstaller.pck
