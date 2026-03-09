@@ -260,7 +260,18 @@ func _build_ui() -> void:
 	_available_label.add_theme_color_override("font_color", Color(0.6, 0.62, 0.65))
 	_space_container.add_child(_available_label)
 
-	# Button row (right after path input)
+	# Progress bar (above buttons)
+	_progress_bar = ProgressBar.new()
+	_progress_bar.custom_minimum_size = Vector2(0, 24)
+	_progress_bar.visible = false
+	_progress_bar.show_percentage = false
+	var bar_bg = StyleBoxFlat.new()
+	bar_bg.bg_color = Color(0.18, 0.18, 0.2)
+	bar_bg.set_corner_radius_all(3)
+	_progress_bar.add_theme_stylebox_override("background", bar_bg)
+	vbox.add_child(_progress_bar)
+
+	# Button row
 	_button_row = HBoxContainer.new()
 	_button_row.add_theme_constant_override("separation", 12)
 	_button_row.alignment = BoxContainer.ALIGNMENT_BEGIN
@@ -279,17 +290,6 @@ func _build_ui() -> void:
 	_action_button.pressed.connect(_on_action_pressed)
 	_apply_button_style(_action_button, true)
 	_button_row.add_child(_action_button)
-
-	# Progress bar
-	_progress_bar = ProgressBar.new()
-	_progress_bar.custom_minimum_size = Vector2(0, 24)
-	_progress_bar.visible = false
-	_progress_bar.show_percentage = false
-	var bar_bg = StyleBoxFlat.new()
-	bar_bg.bg_color = Color(0.18, 0.18, 0.2)
-	bar_bg.set_corner_radius_all(3)
-	_progress_bar.add_theme_stylebox_override("background", bar_bg)
-	vbox.add_child(_progress_bar)
 
 	# (Detail label is added earlier, right after status row)
 
