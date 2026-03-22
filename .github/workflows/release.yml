@@ -38,7 +38,7 @@ jobs:
             "exe_name": "${{ vars.APP_EXE_NAME || 'MyApp.exe' }}",
             "pck_name": "${{ vars.APP_PCK_NAME || 'MyApp.pck' }}",
             "accent_color": [0.3, 0.6, 1.0],
-            "logo_path": "res://assets/suganote-logo.png"
+            "logo_path": "res://assets/sugabase-logo.png"
           }
           EOF
 
@@ -68,7 +68,7 @@ jobs:
         run: |
           mkdir -p exports
           godot --headless --export-release "${{ env.EXPORT_PRESET }}" \
-            "exports/SuganoteInstaller.exe"
+            "exports/SugabaseInstaller.exe"
 
       - name: List export output
         working-directory: exports
@@ -89,8 +89,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          name: Suganote Installer ${{ steps.version.outputs.tag }}
+          name: Sugabase Installer ${{ steps.version.outputs.tag }}
           body: ${{ steps.notes.outputs.notes }}
           files: |
-            exports/SuganoteInstaller.exe
-            exports/SuganoteInstaller.pck
+            exports/SugabaseInstaller.exe
+            exports/SugabaseInstaller.pck

@@ -1,4 +1,4 @@
-# Suganote Installer
+# Sugabase Installer
 
 Standalone installer/updater built with Godot 4.5. Configured at build time via JSON files — the codebase is app-agnostic.
 
@@ -19,9 +19,9 @@ Standalone installer/updater built with Godot 4.5. Configured at build time via 
 The GitHub Actions workflow creates both config files from repository variables and secrets:
 
 **Variables** (Settings > Variables):
-- `APP_NAME` — Display name (e.g., "Suganote")
-- `APP_EXE_NAME` — Executable filename (e.g., "Suganote.exe")
-- `APP_PCK_NAME` — Pack filename (e.g., "Suganote.pck")
+- `APP_NAME` — Display name (e.g., "Sugabase")
+- `APP_EXE_NAME` — Executable filename (e.g., "Sugabase.exe")
+- `APP_PCK_NAME` — Pack filename (e.g., "Sugabase.pck")
 - `SUPABASE_LICENSE_URL` — Supabase project URL for version checking
 
 **Secrets** (Settings > Secrets):

@@ -1,4 +1,4 @@
-# Suganote Installer - Project Context
+# Sugabase Installer - Project Context
 
 ## Project Overview
 Standalone Godot 4.5 installer/updater app. App identity (name, exe, logo) is configured at build time via `app-config.json`, not hardcoded. Uses the `godot-installer` addon for all install/upgrade/rollback logic.
@@ -17,7 +17,7 @@ Standalone Godot 4.5 installer/updater app. App identity (name, exe, logo) is co
 - **After cloning or pulling**: Run `git submodule update --init` to fetch submodule content
 
 ## Related Projects
-- **`github.com/graydwarf/suganote`** — Main Suganote app (also uses godot-installer as submodule)
+- **`github.com/graydwarf/sugabase`** — Main Sugabase app (also uses godot-installer as submodule)
 - **`github.com/graydwarf/godot-installer`** — Reusable installer addon (the shared dependency)
 
 ## Architecture

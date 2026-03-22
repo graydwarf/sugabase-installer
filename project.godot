@@ -10,13 +10,14 @@ config_version=5
 
 [application]
 
-config/name="SuganoteInstaller"
+config/name="sugabase-installer"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.5")
-config/icon="res://assets/suganote-logo.png"
+config/icon="res://assets/sugabase-logo.png"
 
 [display]
 
 window/size/viewport_width=520
 window/size/viewport_height=380
 window/size/resizable=false
+window/size/maximize_disabled=true
